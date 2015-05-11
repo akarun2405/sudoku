@@ -1,9 +1,8 @@
-//IF YOU DON0T HAVE SUFFICIENTLY LARGE SCREEN,
-//THE COMMENTS MAY LOOK CLUTTERED.
-//SORRY NEVER THOUGHT ABOUT THAT WHILE 
-//WRITING THE COMMENTS.
 
 // TODO: Requires cleanup
+
+#include <square.h>
+
 # include <iostream>
 # include <string>
 # include <vector>
@@ -15,15 +14,8 @@
 
 using namespace std;
           
-# define TIME_PER_ITERATION 1
+const int TIME_PER_ITERATION = 1;
 bool flag = true;
-class Square
-{
-public:
-  int no;
-  vector <int> prob;
-  Square(){no = 0;}
-};
 
 //********************************************************FUNCTION FOR UPDATE 1********************************************************//
 /*
@@ -41,9 +33,9 @@ void update1(Square sq[9][9],int a,int b)
     {
       if(j == b)
     continue;
-      if(sq[a][j].no != 0)
+      if(sq[a][j].number() != 0)
 	{
-	  new_end = remove(sq[a][b].prob.begin(),sq[a][b].prob.end(),sq[a][j].no);
+	  new_end = remove(sq[a][b].prob.begin(),sq[a][b].prob.end(),sq[a][j].number());
 	  sq[a][b].prob.erase(new_end,sq[a][b].prob.end());
 	}
     }
@@ -54,9 +46,9 @@ void update1(Square sq[9][9],int a,int b)
     {
       if(i == a)
 	continue;
-      if(sq[i][b].no != 0)
+      if(sq[i][b].number() != 0)
 	{
-	  new_end = remove(sq[a][b].prob.begin(),sq[a][b].prob.end(),sq[i][b].no);
+	  new_end = remove(sq[a][b].prob.begin(),sq[a][b].prob.end(),sq[i][b].number());
 	  sq[a][b].prob.erase(new_end,sq[a][b].prob.end());
 	}
     }
@@ -68,10 +60,10 @@ void update1(Square sq[9][9],int a,int b)
       {
 	if(i == a && j == b)
 	  continue;
-	if(sq[i][j].no != 0)
+	if(sq[i][j].number() != 0)
 	  {
 	    
-	    new_end = remove(sq[a][b].prob.begin(),sq[a][b].prob.end(),sq[i][j].no);
+	    new_end = remove(sq[a][b].prob.begin(),sq[a][b].prob.end(),sq[i][j].number());
 	    sq[a][b].prob.erase(new_end,sq[a][b].prob.end());
 	  }
       }
@@ -81,7 +73,7 @@ void update1(Square sq[9][9],int a,int b)
 
   if(sq[a][b].prob.size() == 1)
     {
-      sq[a][b].no = sq[a][b].prob[0];
+      sq[a][b].number() = sq[a][b].prob[0];
       flag = false;
     }
   return;
@@ -194,7 +186,7 @@ You may wonder that this might be a redundant test(I wondered),but this is kind 
 
 void update3(Square sq[9][9],int a, int b)
 {
-  int i,j,k,l;
+  unsigned int i,j,k,l;
   bool f_flag = false;
  
   for(k = 0; k < sq[a][b].prob.size(); k++)
@@ -293,9 +285,9 @@ void update3(Square sq[9][9],int a, int b)
 
   if(f_flag)
     {
-      sq[a][b].no = sq[a][b].prob[k];
+      sq[a][b].number() = sq[a][b].prob[k];
       sq[a][b].prob.erase(sq[a][b].prob.begin(),sq[a][b].prob.end());
-      sq[a][b].prob.push_back(sq[a][b].no);
+      sq[a][b].prob.push_back(sq[a][b].number());
     }
   return;
 }
@@ -310,7 +302,7 @@ bool incomplete(Square sq[9][9])
 	{
 		for(j = 0; j < 9; j++)
 		{
-			if(sq[i][j].no == 0)
+			if(sq[i][j].number() == 0)
 			{
 				found = true;
 				break;
@@ -332,7 +324,7 @@ void print_matrix(Square a[9][9])
   {
     for(j = 0; j < 9; j++)
       {
-	cout<<a[i][j].no<<" ";
+	cout<<a[i][j].number()<<" ";
       }
     cout<<endl;
   }
@@ -343,8 +335,7 @@ void print_matrix(Square a[9][9])
 int  main()
 {
   int i,j,time = 0;
- bool is_complete = true;
-  char c;
+  bool is_complete = true;
   Square sq[9][9];
   string s;
   system("clear");
@@ -355,25 +346,25 @@ int  main()
   for(i = 0; i < 9; i++)
     for(j = 0; j < 9; j++)
       {			
-	sq[i][j].no = (int)(s[i*9+j] - '0');
+	sq[i][j].number() = (int)(s[i*9+j] - '0');
       }
   
   for(i = 0; i < 9; i++)
     for(j = 0; j < 9; j++)
       {
-	if(sq[i][j].no == 0)
+	if(sq[i][j].number() == 0)
 	  {
 	    for(int k = 0; k < 9; k++)
 	      sq[i][j].prob.push_back(k+1);
 	  }
-	else sq[i][j].prob.push_back(sq[i][j].no);
+	else sq[i][j].prob.push_back(sq[i][j].number());
       }
   
   for(i = 0; i < 9; i++)
     {
       for(j = 0; j < 9; j++)
 	{
-	  cout<<sq[i][j].no<<" ";
+	  cout<<sq[i][j].number()<<" ";
 	}
       cout<<endl;
     }
@@ -391,7 +382,7 @@ int  main()
 	  for(i = 0; i < 9; i++)
 	    for(j = 0; j < 9; j++)
 	      {
-		if(sq[i][j].no == 0)
+		if(sq[i][j].number() == 0)
 		  update1(sq,i,j);
 	      }
 	  
@@ -406,7 +397,7 @@ int  main()
 		{
 		  for(j = 0; j < 9; j++)
 		    {
-		      if(sq[i][j].no == 0)
+		      if(sq[i][j].number() == 0)
 			{
 			  update3(sq,i,j);
 			}
