@@ -13,6 +13,7 @@
 # include <cstdlib>
 
 using namespace std;
+using namespace Phoenix;
           
 const int TIME_PER_ITERATION = 1;
 bool flag = true;
@@ -35,8 +36,10 @@ void update1(Square sq[9][9],int a,int b)
     continue;
       if(sq[a][j].number() != 0)
 	{
-	  new_end = remove(sq[a][b].prob.begin(),sq[a][b].prob.end(),sq[a][j].number());
-	  sq[a][b].prob.erase(new_end,sq[a][b].prob.end());
+    	  sq[a][b].removeFromProbabilities(sq[a][j].number());
+    	  /*
+	  new_end = remove(sq[a][b].probabilities().begin(),sq[a][b].probabilities().end(),sq[a][j].number());
+	  sq[a][b].probabilities().erase(new_end,sq[a][b].probabilities().end());*/
 	}
     }
   
@@ -48,8 +51,10 @@ void update1(Square sq[9][9],int a,int b)
 	continue;
       if(sq[i][b].number() != 0)
 	{
-	  new_end = remove(sq[a][b].prob.begin(),sq[a][b].prob.end(),sq[i][b].number());
-	  sq[a][b].prob.erase(new_end,sq[a][b].prob.end());
+    	  sq[a][b].removeFromProbabilities(sq[i][b].number());
+    	  /*
+	  new_end = remove(sq[a][b].probabilities().begin(),sq[a][b].probabilities().end(),sq[i][b].number());
+	  sq[a][b].probabilities().erase(new_end,sq[a][b].probabilities().end());*/
 	}
     }
   
@@ -63,17 +68,17 @@ void update1(Square sq[9][9],int a,int b)
 	if(sq[i][j].number() != 0)
 	  {
 	    
-	    new_end = remove(sq[a][b].prob.begin(),sq[a][b].prob.end(),sq[i][j].number());
-	    sq[a][b].prob.erase(new_end,sq[a][b].prob.end());
+	    new_end = remove(sq[a][b].probabilities().begin(),sq[a][b].probabilities().end(),sq[i][j].number());
+	    sq[a][b].probabilities().erase(new_end,sq[a][b].probabilities().end());
 	  }
       }
 	
 
   //updating the entries..
 
-  if(sq[a][b].prob.size() == 1)
+  if(sq[a][b].probabilities().size() == 1)
     {
-      sq[a][b].number() = sq[a][b].prob[0];
+      sq[a][b].number() = sq[a][b].probabilities()[0];
       flag = false;
     }
   return;
@@ -95,7 +100,7 @@ void update2(Square sq[9][9],int a)
   vector <int>::iterator new_end;
   for(j = 0; j < 9; j++)
     {
-      int tempsize = sq[a][j].prob.size();
+      int tempsize = sq[a][j].probabilities().size();
       if(tempsize != 1)
 	{
 	  int k,l;
@@ -105,7 +110,7 @@ void update2(Square sq[9][9],int a)
 	    {
 	      if(k == j)
 		continue;
-	      if(sq[a][j].prob == sq[a][k].prob)
+	      if(sq[a][j].probabilities() == sq[a][k].probabilities())
 		{
 		  
 		  temp.push_back(k);
@@ -115,7 +120,7 @@ void update2(Square sq[9][9],int a)
 	    {
 	      for(l = 0; l < 9; l++)
 		{
-		  int h;
+		  unsigned int h;
 		  for(h = 0; h < temp.size(); h++)
 		    {
 		      if(l == temp[h])
@@ -125,8 +130,8 @@ void update2(Square sq[9][9],int a)
 		    continue;
 		  for(h = 0; h < temp.size(); h++)
 		    {
-		      new_end = remove(sq[a][l].prob.begin(),sq[a][l].prob.end(),sq[a][j].prob[h]);
-		      sq[a][l].prob.erase(new_end,sq[a][l].prob.end());
+		      new_end = remove(sq[a][l].probabilities().begin(),sq[a][l].probabilities().end(),sq[a][j].probabilities()[h]);
+		      sq[a][l].probabilities().erase(new_end,sq[a][l].probabilities().end());
 		    }
 		}
 	    }
@@ -136,7 +141,7 @@ void update2(Square sq[9][9],int a)
   //checking in the colum a..
   for(i = 0; i < 9; i++)
     {
-      int tempsize = sq[i][a].prob.size();
+      int tempsize = sq[i][a].probabilities().size();
       if(tempsize != 1)
 	{
 	  int k,l;vector <int> temp;
@@ -145,7 +150,7 @@ void update2(Square sq[9][9],int a)
 	    {
 			  if(k == i)
 			    continue;
-			  if(sq[i][a].prob == sq[k][a].prob)
+			  if(sq[i][a].probabilities() == sq[k][a].probabilities())
 			    {
 			      
 			      temp.push_back(k);
@@ -155,7 +160,7 @@ void update2(Square sq[9][9],int a)
 	    {
 	      for(l = 0; l < 9; l++)
 		{
-		  int h;
+		  unsigned int h;
 		  for(h = 0; h < temp.size(); h++)
 		    {
 		      if(l == temp[h])
@@ -165,8 +170,8 @@ void update2(Square sq[9][9],int a)
 		    continue;
 		  for(h = 0; h < temp.size(); h++)
 		    {
-		      new_end = remove(sq[l][a].prob.begin(),sq[l][a].prob.end(),sq[i][a].prob[h]);
-		      sq[l][a].prob.erase(new_end,sq[l][a].prob.end());
+		      new_end = remove(sq[l][a].probabilities().begin(),sq[l][a].probabilities().end(),sq[i][a].probabilities()[h]);
+		      sq[l][a].probabilities().erase(new_end,sq[l][a].probabilities().end());
 		          
 		    }
 		}
@@ -184,12 +189,12 @@ This function checks for the occurence of a possibility in exactly(FREQUENCY CHE
 You may wonder that this might be a redundant test(I wondered),but this is kind of different from other functions.. 
 */
 
-void update3(Square sq[9][9],int a, int b)
+void update3(Square sq[9][9],unsigned int a, unsigned int b)
 {
   unsigned int i,j,k,l;
   bool f_flag = false;
  
-  for(k = 0; k < sq[a][b].prob.size(); k++)
+  for(k = 0; k < sq[a][b].probabilities().size(); k++)
     {
       bool t_flag = true;
            
@@ -202,9 +207,9 @@ void update3(Square sq[9][9],int a, int b)
 		continue;
 	      else
 		{
-		  for(l = 0; l < sq[a][j].prob.size(); l++)
+		  for(l = 0; l < sq[a][j].probabilities().size(); l++)
 		    {
-		      if(sq[a][b].prob[k] == sq[a][j].prob[l])
+		      if(sq[a][b].probabilities()[k] == sq[a][j].probabilities()[l])
 			{
 			  t_flag = false;
 			  break;
@@ -231,9 +236,9 @@ void update3(Square sq[9][9],int a, int b)
 		continue;
 	      else
 		{
-		  for(l = 0; l < sq[i][b].prob.size(); l++)
+		  for(l = 0; l < sq[i][b].probabilities().size(); l++)
 		    {
-		      if(sq[a][b].prob[k] == sq[i][b].prob[l])
+		      if(sq[a][b].probabilities()[k] == sq[i][b].probabilities()[l])
 			{
 			  t_flag = false;
 			  break;
@@ -261,9 +266,9 @@ void update3(Square sq[9][9],int a, int b)
 		    continue;
 		  else
 		    {
-		      for(l = 0; l < sq[i][j].prob.size(); l++)
+		      for(l = 0; l < sq[i][j].probabilities().size(); l++)
 			{
-			  if(sq[a][b].prob[k] == sq[i][j].prob[l])
+			  if(sq[a][b].probabilities()[k] == sq[i][j].probabilities()[l])
 			    {
 			      t_flag = false;
 			      break;
@@ -285,9 +290,9 @@ void update3(Square sq[9][9],int a, int b)
 
   if(f_flag)
     {
-      sq[a][b].number() = sq[a][b].prob[k];
-      sq[a][b].prob.erase(sq[a][b].prob.begin(),sq[a][b].prob.end());
-      sq[a][b].prob.push_back(sq[a][b].number());
+      sq[a][b].number() = sq[a][b].probabilities()[k];
+      sq[a][b].probabilities().erase(sq[a][b].probabilities().begin(),sq[a][b].probabilities().end());
+      sq[a][b].probabilities().push_back(sq[a][b].number());
     }
   return;
 }
@@ -355,9 +360,9 @@ int  main()
 	if(sq[i][j].number() == 0)
 	  {
 	    for(int k = 0; k < 9; k++)
-	      sq[i][j].prob.push_back(k+1);
+	      sq[i][j].probabilities().push_back(k+1);
 	  }
-	else sq[i][j].prob.push_back(sq[i][j].number());
+	else sq[i][j].probabilities().push_back(sq[i][j].number());
       }
   
   for(i = 0; i < 9; i++)

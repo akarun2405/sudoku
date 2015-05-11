@@ -26,3 +26,16 @@
 *.exe
 *.out
 *.app
+
+# Visual Studio
+Debug/*
+*opensdf
+*sdf
+*sln
+*suo
+*vcxproj
+*filters
+
+# Eclipse
+*.cproject
+*.project
