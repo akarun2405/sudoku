@@ -5,18 +5,17 @@
  *      Author: Arun
  */
 
-#ifndef SQUARE_H_
-#define SQUARE_H_
+#ifndef CELL_H_
+#define CELL_H_
 
 #include <algorithm>
 #include <vector>
 
 namespace Phoenix {
 
-class Square
-{
+class Cell {
 public:
-	Square();
+	Cell();
 
 	const int number() const;
 	int& number();
@@ -31,31 +30,31 @@ private:
 	std::vector<int> d_probabilities;
 };
 
-inline Square::Square()
+inline Cell::Cell()
 : d_number(0)
 {}
 
-inline const int Square::number() const
+inline const int Cell::number() const
 {
 	return d_number;
 }
 
-inline int& Square::number()
+inline int& Cell::number()
 {
 	return d_number;
 }
 
-inline 	const std::vector<int>& Square::probabilities() const
+inline 	const std::vector<int>& Cell::probabilities() const
 {
 	return d_probabilities;
 }
 
-inline std::vector<int>& Square::probabilities()
+inline std::vector<int>& Cell::probabilities()
 {
 	return d_probabilities;
 }
 
-inline void Square::removeFromProbabilities(const int number)
+inline void Cell::removeFromProbabilities(const int number)
 {
 	d_probabilities.erase(std::remove(d_probabilities.begin(),
 			                          d_probabilities.end(),
@@ -64,4 +63,4 @@ inline void Square::removeFromProbabilities(const int number)
 }
 
 }  // namespace Phoenix
-#endif /* SQUARE_H_ */
+#endif /* CELL_H_ */

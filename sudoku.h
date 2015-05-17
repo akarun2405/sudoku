@@ -8,7 +8,7 @@
 #ifndef SUDOKU_H_
 #define SUDOKU_H_
 
-#include <square.h>
+#include <cell.h>
 
 #include <string>
 #include <vector>
@@ -23,7 +23,7 @@ public:
 	Sudoku(std::string input);
 
 private:
-	vector<vector<Square> > d_matrix;
+	std::vector<std::vector<Cell> > d_matrix;
 };
 
 }  // namespace Phoenix
