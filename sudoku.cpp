@@ -1,7 +1,7 @@
 
 // TODO: Requires cleanup
 
-#include <square.h>
+#include <sudoku.h>
 
 # include <iostream>
 # include <string>
@@ -25,60 +25,38 @@ This function does the normal erasing stuff..
 
 void update1(Cell cell[9][9],int a,int b)
 {
-    vector <int>::iterator new_end;
-
     //checking in the rows...
+    for(auto j = 0; j < 9; j++) {
+        if(j == b) continue;
 
-    //int i,j;
-    for(auto j = 0; j < 9; j++)
-    {
-        if(j == b)
-            continue;
-        if(cell[a][j].number() != 0)
-        {
-            cell[a][b].removeFromProbabilities(cell[a][j].number());
-            /*
-	  new_end = remove(sq[a][b].probabilities().begin(),sq[a][b].probabilities().end(),sq[a][j].number());
-	  sq[a][b].probabilities().erase(new_end,sq[a][b].probabilities().end());*/
+        if(cell[a][j].value() != 0) {
+            cell[a][b].removeFromProbabilities(cell[a][j].value());
         }
     }
 
     //checking in the columns..
+    for(auto i = 0; i < 9; i++) {
+        if(i == a) continue;
 
-    for(auto i = 0; i < 9; i++)
-    {
-        if(i == a)
-            continue;
-        if(cell[i][b].number() != 0)
-        {
-            cell[a][b].removeFromProbabilities(cell[i][b].number());
-            /*
-	  new_end = remove(sq[a][b].probabilities().begin(),sq[a][b].probabilities().end(),sq[i][b].number());
-	  sq[a][b].probabilities().erase(new_end,sq[a][b].probabilities().end());*/
+        if(cell[i][b].value() != 0) {
+            cell[a][b].removeFromProbabilities(cell[i][b].value());
         }
     }
 
     //checking in the box..
+    for(auto i = (a/3)*3; i < (a/3)*3+3; i++) {
+        for(auto j = (b/3)*3; j < (b/3)*3+3; j++) {
+            if(i == a && j == b) continue;
 
-    for(auto i = (a/3)*3; i < (a/3)*3+3; i++)
-        for(auto j = (b/3)*3; j < (b/3)*3+3; j++)
-        {
-            if(i == a && j == b)
-                continue;
-            if(cell[i][j].number() != 0)
-            {
-
-                new_end = remove(cell[a][b].probabilities().begin(),cell[a][b].probabilities().end(),cell[i][j].number());
-                cell[a][b].probabilities().erase(new_end,cell[a][b].probabilities().end());
+            if(cell[i][j].value() != 0) {
+                cell[a][b].removeFromProbabilities(cell[i][j].value());
             }
         }
-
+    }
 
     //updating the entries..
-
-    if(cell[a][b].probabilities().size() == 1)
-    {
-        cell[a][b].number() = cell[a][b].probabilities()[0];
+    if(cell[a][b].probabilities().size() == 1) {
+        cell[a][b].value() = cell[a][b].probabilities()[0];
         flag = false;
     }
     return;
@@ -97,7 +75,6 @@ void update2(Cell cell[9][9],int a)
     //checking in the row a..
 
     int i,j;
-    vector <int>::iterator new_end;
     for(j = 0; j < 9; j++)
     {
         int tempsize = cell[a][j].probabilities().size();
@@ -130,8 +107,8 @@ void update2(Cell cell[9][9],int a)
                         continue;
                     for(h = 0; h < temp.size(); h++)
                     {
-                        new_end = remove(cell[a][l].probabilities().begin(),cell[a][l].probabilities().end(),cell[a][j].probabilities()[h]);
-                        cell[a][l].probabilities().erase(new_end,cell[a][l].probabilities().end());
+                        cell[a][l].removeFromProbabilities(
+                                                cell[a][j].probabilities()[h]);
                     }
                 }
             }
@@ -170,8 +147,8 @@ void update2(Cell cell[9][9],int a)
                         continue;
                     for(h = 0; h < temp.size(); h++)
                     {
-                        new_end = remove(cell[l][a].probabilities().begin(),cell[l][a].probabilities().end(),cell[i][a].probabilities()[h]);
-                        cell[l][a].probabilities().erase(new_end,cell[l][a].probabilities().end());
+                        cell[l][a].removeFromProbabilities(
+                                                cell[i][a].probabilities()[h]);
 
                     }
                 }
@@ -290,9 +267,9 @@ void update3(Cell cell[9][9],unsigned int a, unsigned int b)
 
     if(f_flag)
     {
-        cell[a][b].number() = cell[a][b].probabilities()[k];
-        cell[a][b].probabilities().erase(cell[a][b].probabilities().begin(),cell[a][b].probabilities().end());
-        cell[a][b].probabilities().push_back(cell[a][b].number());
+        cell[a][b].value() = cell[a][b].probabilities()[k];
+        cell[a][b].probabilities().clear();
+        cell[a][b].probabilities().push_back(cell[a][b].value());
     }
     return;
 }
@@ -301,24 +278,14 @@ void update3(Cell cell[9][9],unsigned int a, unsigned int b)
 
 bool incomplete(Cell cell[9][9])
 {
-    int i,j;
-    bool found = false;
-    for(i = 0; i < 9; i++)
-    {
-        for(j = 0; j < 9; j++)
-        {
-            if(cell[i][j].number() == 0)
-            {
-                found = true;
-                break;
+    for (auto i = 0; i < 9; ++i) {
+        for (auto j = 0; j < 9; ++j) {
+            if (cell[i][j].value() == 0) {
+                return true;
             }
         }
-        if(found)
-            break;
     }
-    if(i < 9 || j < 9)
-        return true;
-    else return false;
+    return false;
 }
 
 
@@ -329,7 +296,7 @@ void print_matrix(Cell cell[9][9])
     {
         for(j = 0; j < 9; j++)
         {
-            cout<<cell[i][j].number()<<" ";
+            cout<<cell[i][j].value()<<" ";
         }
         cout<<endl;
     }
@@ -351,25 +318,25 @@ int  main()
     for(i = 0; i < 9; i++)
         for(j = 0; j < 9; j++)
         {
-            cell[i][j].number() = (int)(s[i*9+j] - '0');
+            cell[i][j].value() = (int)(s[i*9+j] - '0');
         }
 
     for(i = 0; i < 9; i++)
         for(j = 0; j < 9; j++)
         {
-            if(cell[i][j].number() == 0)
+            if(cell[i][j].value() == 0)
             {
                 for(int k = 0; k < 9; k++)
                     cell[i][j].probabilities().push_back(k+1);
             }
-            else cell[i][j].probabilities().push_back(cell[i][j].number());
+            else cell[i][j].probabilities().push_back(cell[i][j].value());
         }
 
     for(i = 0; i < 9; i++)
     {
         for(j = 0; j < 9; j++)
         {
-            cout<<cell[i][j].number()<<" ";
+            cout<<cell[i][j].value()<<" ";
         }
         cout<<endl;
     }
@@ -387,7 +354,7 @@ int  main()
             for(i = 0; i < 9; i++)
                 for(j = 0; j < 9; j++)
                 {
-                    if(cell[i][j].number() == 0)
+                    if(cell[i][j].value() == 0)
                         update1(cell,i,j);
                 }
 
@@ -402,7 +369,7 @@ int  main()
                 {
                     for(j = 0; j < 9; j++)
                     {
-                        if(cell[i][j].number() == 0)
+                        if(cell[i][j].value() == 0)
                         {
                             update3(cell,i,j);
                         }

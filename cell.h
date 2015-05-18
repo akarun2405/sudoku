@@ -17,8 +17,8 @@ class Cell {
 public:
 	Cell();
 
-	const int number() const;
-	int& number();
+	const int value() const;
+	int& value();
 
 	const std::vector<int>& probabilities() const;
 	std::vector<int>& probabilities();
@@ -26,22 +26,22 @@ public:
 	void removeFromProbabilities(const int number);
 
 private:
-	int d_number;
+	int d_value;
 	std::vector<int> d_probabilities;
 };
 
 inline Cell::Cell()
-: d_number(0)
+: d_value(0)
 {}
 
-inline const int Cell::number() const
+inline const int Cell::value() const
 {
-	return d_number;
+	return d_value;
 }
 
-inline int& Cell::number()
+inline int& Cell::value()
 {
-	return d_number;
+	return d_value;
 }
 
 inline 	const std::vector<int>& Cell::probabilities() const
